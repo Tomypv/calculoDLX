@@ -6,7 +6,7 @@
 .data
 ;; VARIABLES DE ENTRADA Y SALIDA: NO MODIFICAR ORDEN
 ; VARIABLE DE ENTRADA: (SE PODRA MODIFICAR EL VALOR ENTRE 1 Y 100)
-valor_inicial: .word 97
+valor_inicial: .word 3
 ;; VARIABLES DE SALIDA:
 secuencia: .space 120*4
 secuencia_tamanho: .word 0
@@ -21,38 +21,37 @@ lista_valor_medio: .float 0
 .global main
 main:
 	lw  r1, valor_inicial
-    lw  r7, secuencia_tamanho
+	addi  r8,r0,#0
 	movi2fp f1, r1
 	cvti2f f1, f1
-	addi  r8,r0,#0
     addi  r2,r0,#2
     addi  r3,r0,#3
 	addi  r4,r0,#4 ;;Añadimos r4 para poder dividir por 4
-	addi  r7,r0,#0
-	add  r30,r0,r1
 	sw  secuencia(r8), r1
 	
-
+	actualizar_maximo:
+		add  r30,r0,r1
     bucle:
-    
-	subi r5, r1, #1 ;;Ponemos esta operación más arriba para que le de tiempo a r5
+
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
 
 	;; Incrementa el contador de la secuencia
     ;; Quitamos el contador de r7, dividimos por 4 a r8 más tarde
 	addi r8, r8, #4
 
-    ;; Compara el valor de r1 con 1
-    
-    beqz r5, fin ;; Salta a fin si r1 es igual a 1
+	beqz r5, fin ;; Salta a fin si r1 es igual a 1
 
     ;; Llama a la función is_even_odd para verificar si el número en r1 es par o impar
     jal is_even_odd
+	
+	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
 
-	div r29, r30, r1
+	;; Guarda el número en la secuencia
 	sw secuencia(r8), r1
-    beqz r29, actualizar_mayor  ;; Salta a actualizar_mayor si r1 es mayor que r30
-    
-    ;; Si r1 no es igual a 1, vuelve a ejecutar el bucle
+
+    beqz r29, actualizar_maximo  ;; Si el nuevo número no es el mayor, volver a ejecutar el bucle directamente
+
     j bucle
 
 	
@@ -103,40 +102,45 @@ is_even_odd:
 
 fin_is_even_odd:
 	jr r31  ;; Retorna
-
-actualizar_mayor:
-	add r30, r0, r1 ;;
-	j bucle
 	
 sec_medio:
 
-	;; Inicializa el contador de la secuencia en 0
-	addi r8, r0, #0
-
-	;; Inicializa el acumulador de la secuencia en 0
-	addi r9, r0, #0
+	;; Inicializa el contador de la secuencia en 1
+	addi r8, r0, #1
 
 	;; Inicializa el índice de la secuencia en 0
-	addi r10, r0, #0
+	addi r10, r0, #4
+
+	;; Calcula la diferencia entre el contador y el tamaño de la secuencia para saber cuándo terminar
+		sub r13, r7, r8
+
+	;; Carga el primer valor de la secuencia en el acumulador
+		lw r9, valor_inicial
+
+	;; Compara el contador con el tamaño de la secuencia
+		beqz r13, continuar  ;; Salta a bucle_secuencia si r13 no es cero
 
 	;; Bucle para recorrer la secuencia
 	bucle_secuencia:
 		;; Carga el valor de la secuencia en r12
 		lw r12, secuencia(r10)
 
+		;; Incrementa el contador
+		addi r8, r8, #1
+
 		;; Suma el valor de la secuencia al acumulador
 		add r9, r9, r12
 
-		;; Incrementa el contador
-		addi r8, r8, #1
+		;; Calcula la diferencia entre el contador y el tamaño de la secuencia para saber cuándo terminar
+		sub r13, r7, r8
 
 		;; Incrementa el índice
 		addi r10, r10, #4
 
 		;; Compara el contador con el tamaño de la secuencia
-		sub r13, r7, r8
 		bnez r13, bucle_secuencia  ;; Salta a bucle_secuencia si r13 no es cero
 
+	continuar:
 	movi2fp f5, r9
 	cvti2f f5, f5
 
