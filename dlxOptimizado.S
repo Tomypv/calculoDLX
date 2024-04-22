@@ -22,8 +22,6 @@ lista_valor_medio: .float 0
 main:
 	lw  r1, valor_inicial
 	addi  r8,r0,#0
-	movi2fp f1, r1
-	cvti2f f1, f1
     addi  r2,r0,#2
     addi  r3,r0,#3
 	addi  r4,r0,#4 ;;Añadimos r4 para poder dividir por 4
@@ -43,66 +41,52 @@ main:
 
 	continue:
 	
-	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
+		slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
 
-	;; Incrementa el contador de la secuencia
-	addi r8, r8, #4
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
 
-    beqz r29, actualizar_maximo  ;; Si el nuevo número no es el mayor, volver a ejecutar el bucle directamente
+		beqz r29, actualizar_maximo  ;; Si el nuevo número no es el mayor, volver a ejecutar el bucle directamente
 
-	;; Compara el valor de r1 con 1
-	subi r5, r1, #1
+		;; Compara el valor de r1 con 1
+		subi r5, r1, #1
 
-	;; Guarda el número en la secuencia
-	sw secuencia(r8), r1
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
 
-	bnez r5, bucle ;; Repite el bucle si no es 1
+		bnez r5, bucle ;; Repite el bucle si no es 1
 
 fin:
     
-	;; Guarda el tamaño de la secuencia en secuencia_tamanho
+	;; Obtenemos el tamaño de la secuencia dividiendo entre 4 el índice (luego le añadimos 1)
 	div r7, r8, r4
-	movi2fp f2, r7
-	cvti2f f2, f2
-	sw secuencia_tamanho, r7
 
-	;; Guarda el valor máximo de la secuencia en secuencia_maximo
+	;; Guarda el valor de inicio en f1
+	;; Carga el primer valor de la secuencia en el acumulador
+	lw r9, valor_inicial
 	movi2fp f3, r30
-	cvti2f f3, f3
+	movi2fp f1, r9
 	sw secuencia_maximo, r30
+	cvti2f f3, f3
+	cvti2f f1, f1
 
-	;; Calcula el valor medio de la secuencia y lo guarda en secuencia_valor_medio
-	jal sec_medio
-
-	;; Calcula la lista y su valor medio
-	jal listar
-
-	trap 0
-
-;; FUNCIONES AUXILIARES
-
-is_even:
-	;; En este caso es par
-	;; Divide el número r1 por 2
-		div r1, r1, r2
-	j continue
 	
-sec_medio:
-
-	;; Inicializa el contador de la secuencia en 1
+	addi r7, r7, #1
+	movi2fp f2, r7
+	sw secuencia_tamanho, r7
 	addi r8, r0, #1
-
-	;; Inicializa el índice de la secuencia en 0
-	addi r10, r0, #4
+	cvti2f f2, f2
+	
+	
 
 	;; Calcula la diferencia entre el contador y el tamaño de la secuencia para saber cuándo terminar
-		sub r13, r7, r8
+	sub r13, r7, r8
 
-	;; Carga el primer valor de la secuencia en el acumulador
-		lw r9, valor_inicial
+	;; Inicializa el índice de la secuencia en 4
+	addi r10, r0, #4
 
 	;; Compara el contador con el tamaño de la secuencia
-		beqz r13, continuar  ;; Salta a bucle_secuencia si r13 no es cero
+	beqz r13, continuar  ;; Salta a bucle_secuencia si r13 no es cero
 
 	;; Bucle para recorrer la secuencia
 	bucle_secuencia:
@@ -131,11 +115,26 @@ sec_medio:
 	;; Divide el acumulador por el tamaño de la secuencia
 	divf f4, f5, f2
 
+	add r8, r0, #0
+	multf f5, f1, f2
+	multf f6, f3, f2
+
 	;; Guarda el valor medio de la secuencia en secuencia_valor_medio
 	sf secuencia_valor_medio, f4
 
-	;; Fin de la función
-	jr r31  ;; Retorna
+
+	;; Calcula la lista y su valor medio
+	jal listar
+
+	trap 0
+
+;; FUNCIONES AUXILIARES
+
+is_even:
+	;; En este caso es par
+	;; Divide el número r1 por 2
+		div r1, r1, r2
+	j continue
 
 
 listar:
@@ -153,21 +152,16 @@ listar:
 	;;f6 es vMax * vt
 
 	;;f7 es vMed * vt
-
-	add r8, r0, #0
-	multf f5, f1, f2
-	multf f6, f3, f2
+	
 	multf f7, f4, f2
 	sf lista(r8), f5
 	addf f20, f0, f5
 
 	add r8, r0, #4
-	multf f6, f3, f2
 	sf lista(r8), f6
 	addf f20, f20, f6
 
 	add r8, r0, #8
-	multf f7, f4, f2
 	sf lista(r8), f7
 	addf f20, f20, f7
 
