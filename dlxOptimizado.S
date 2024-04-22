@@ -6,7 +6,7 @@
 .data
 ;; VARIABLES DE ENTRADA Y SALIDA: NO MODIFICAR ORDEN
 ; VARIABLE DE ENTRADA: (SE PODRA MODIFICAR EL VALOR ENTRE 1 Y 100)
-valor_inicial: .word 3
+valor_inicial: .word 66
 ;; VARIABLES DE SALIDA:
 secuencia: .space 120*4
 secuencia_tamanho: .word 0
@@ -163,64 +163,66 @@ listar:
 	;;f3 es secuencia_maximo
 	
 	;;f4 es secuencia_valor_medio
-	
+
+	;;f5 es vIni * vt
+
+	;;f6 es vMax * vt
+
+	;;f7 es vMed * vt
+
 	add r8, r0, #0
 	multf f5, f1, f2
+	multf f6, f3, f2
+	multf f7, f4, f2
 	sf lista(r8), f5
-	addf f6, f0, f5
+	addf f20, f0, f5
 
 	add r8, r0, #4
-	multf f5, f3, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	multf f6, f3, f2
+	sf lista(r8), f6
+	addf f20, f20, f6
 
 	add r8, r0, #8
-	multf f5, f4, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	multf f7, f4, f2
+	sf lista(r8), f7
+	addf f20, f20, f7
 
 	add r8, r0, #12
-	divf f5, f1, f3
-	multf f5, f5, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	divf f8, f5, f3
+	sf lista(r8), f8
+	addf f20, f20, f8
 	
 	add r8, r0, #16
-	divf f5, f1, f4
-	multf f5, f5, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	divf f9, f5, f4
+	sf lista(r8), f9
+	addf f20, f20, f9
 
 	add r8, r0, #20
-	divf f5, f3, f1
-	multf f5, f5, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	divf f10, f6, f1
+	sf lista(r8), f10 
+	addf f20, f20, f10
 
 	add r8, r0, #24
-	divf f5, f3, f4
-	multf f5, f5, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	divf f11, f6, f4
+	sf lista(r8), f11
+	addf f20, f20, f11
 
 	add r8, r0, #28
-	divf f5, f4, f1
-	multf f5, f5, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	divf f12, f7, f1
+	sf lista(r8), f12
+	addf f20, f20, f12
 
 	add r8, r0, #32
-	divf f5, f4, f3
-	multf f5, f5, f2
-	sf lista(r8), f5
-	addf f6, f6, f5
+	divf f5, f7, f3
+	sf lista(r8), f13
+	addf f20, f20, f13
 
 	add r8, r0, #9
-	movi2fp f9, r8
-	cvti2f f9, f9
+	movi2fp f14, r8
+	cvti2f f14, f14
 
-	divf f6, f6, f9
+	divf f20, f20, f14
 
-	sf lista_valor_medio, f6
+	sf lista_valor_medio, f20
 	
 	jr r31  ;; Retorna
