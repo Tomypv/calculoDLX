@@ -34,8 +34,14 @@ main:
 
     bucle:
 
-    ;; Llama a la función is_even_odd para verificar si el número en r1 es par o impar
-    jal is_even_odd
+		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		beqz r5, is_even
+
+		;; En este caso es impar
+		mult r1, r1, r3
+		addi r1, r1, #1
+
+	continue:
 	
 	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
 
@@ -75,30 +81,11 @@ fin:
 
 ;; FUNCIONES AUXILIARES
 
-is_even_odd:
-    
-	;; Guardo en r17 el valor de r1
-	add r17, r0, r1
-	
+is_even:
+	;; En este caso es par
 	;; Divide el número r1 por 2
-	div r1, r1, r2
-
-    ;; Multiplica el resultado de la división por 2
-	mult r6, r1, r2
-
-    ;; Resta el resultado de la multiplicación del número original
-    sub r5, r17, r6
-
-    ;; Si el resultado de la resta es cero, el número es par; si no, es impar
-    beqz r5, fin_is_even_odd ;; Si es 0, r1 es par y ya está dividido por 2
-
-	;; Si no, el número es impar
-    mult r1, r17, r3 
-    addi r1, r1, #1
-    jr r31  ;; Retorna
-
-fin_is_even_odd:
-	jr r31  ;; Retorna
+		div r1, r1, r2
+	j continue
 	
 sec_medio:
 
