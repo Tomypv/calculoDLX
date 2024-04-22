@@ -27,34 +27,31 @@ main:
     addi  r2,r0,#2
     addi  r3,r0,#3
 	addi  r4,r0,#4 ;;Añadimos r4 para poder dividir por 4
-	sw  secuencia(r8), r1
 	
 	actualizar_maximo:
 		add  r30,r0,r1
+		sw secuencia(r8), r1
+
     bucle:
-
-	;; Compara el valor de r1 con 1
-	subi r5, r1, #1
-
-	;; Incrementa el contador de la secuencia
-    ;; Quitamos el contador de r7, dividimos por 4 a r8 más tarde
-	addi r8, r8, #4
-
-	beqz r5, fin ;; Salta a fin si r1 es igual a 1
 
     ;; Llama a la función is_even_odd para verificar si el número en r1 es par o impar
     jal is_even_odd
 	
 	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
 
-	;; Guarda el número en la secuencia
-	sw secuencia(r8), r1
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
 
     beqz r29, actualizar_maximo  ;; Si el nuevo número no es el mayor, volver a ejecutar el bucle directamente
 
-    j bucle
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
 
-	
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+
+	bnez r5, bucle ;; Repite el bucle si no es 1
+
 fin:
     
 	;; Guarda el tamaño de la secuencia en secuencia_tamanho
