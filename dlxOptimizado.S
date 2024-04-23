@@ -37,6 +37,7 @@ main:
     bucle:
 
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		add  r9, r9, r1
 		beqz r5, is_even
 
 		;; En este caso es impar
@@ -49,8 +50,6 @@ main:
 
 		;; Incrementa el contador de la secuencia
 		addi r8, r8, #4
-
-		add  r9, r9, r1
 
 		beqz r29, actualizar_maximo  ;; Si el nuevo número no es el mayor, volver a ejecutar el bucle directamente
 
@@ -88,28 +87,67 @@ fin:
 	;; Divide el acumulador por el tamaño de la secuencia
 	divf f4, f5, f2
 
-	add r8, r0, #0
 	multf f5, f1, f2
+	add r10, r0, #0
+	add r11, r0, #4
+	add r12, r0, #8
+	add r13, r0, #12
 	multf f6, f3, f2
-	divf f8, f5, f3
-	sf lista(r8), f5
-	addf f20, f0, f5
-	divf f10, f6, f1
+	add	r19, r0, #9
+	add r14, r0, #16
+	add r15, r0, #20
+	add r16, r0, #24
+	add r17, r0, #28
+	add r18, r0, #32
 	
-	add r8, r0, #4
-	sf lista(r8), f6
+	movi2fp f14, r19
+	sf lista(r10), f5
+	addf f20, f0, f5
 	addf f20, f20, f6
 
+	divf f10, f6, f1
 	multf f7, f4, f2
+	sf lista(r11), f6
+	cvti2f f14, f14
 
+
+	divf f8, f5, f3
 	sf secuencia_valor_medio, f4
+	sf lista(r12), f7
+	addf f20, f20, f7
+	
 
-	;; Calcula la lista y su valor medio
-	jal listar
+	divf f9, f5, f4
 
+
+	divf f11, f6, f4
+	addf f20, f20, f8
+	addf f20, f20, f9
+	addf f20, f20, f10
+	sf lista(r13), f8
+	sf lista(r14), f9
+	sf lista(r15), f10
+
+
+	divf f12, f7, f1
+	addf f20, f20, f11
+	sf lista(r16), f11
+
+
+	divf f13, f7, f3
+	sf lista(r17), f12
+	addf f20, f20, f12
+	addf f20, f20, f13
+	
+
+	divf f20, f20, f14
+	sf lista(r18), f13
+
+	sf lista_valor_medio, f20
+	
 	trap 0
 
-;; FUNCIONES AUXILIARES
+;; FIN PROGRAMA
 
 is_even:
 	;; En este caso es par
@@ -117,8 +155,6 @@ is_even:
 		srli r1, r1, #1
 	j continue
 
-
-listar:
 
 	;;f1 es valor_inicial
 
@@ -134,48 +170,3 @@ listar:
 
 	;;f7 es vMed * vt
 	
-
-	add r8, r0, #8
-
-	sf lista(r8), f7
-	addf f20, f20, f7
-
-	add r8, r0, #12
-	
-	sf lista(r8), f8
-	addf f20, f20, f8
-	
-	add r8, r0, #16
-	divf f9, f5, f4
-	sf lista(r8), f9
-	addf f20, f20, f9
-
-	add r8, r0, #20
-	
-	sf lista(r8), f10 
-	addf f20, f20, f10
-
-	add r8, r0, #24
-	divf f11, f6, f4
-	sf lista(r8), f11
-	addf f20, f20, f11
-
-	add r8, r0, #28
-	divf f12, f7, f1
-	sf lista(r8), f12
-	addf f20, f20, f12
-
-	add r8, r0, #32
-	divf f13, f7, f3
-	sf lista(r8), f13
-	addf f20, f20, f13
-
-	addi r8, r0, #9
-	movi2fp f14, r8
-	cvti2f f14, f14
-
-	divf f20, f20, f14
-
-	sf lista_valor_medio, f20
-	
-	jr r31  ;; Retorna
