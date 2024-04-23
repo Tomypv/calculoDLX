@@ -6,7 +6,7 @@
 .data
 ;; VARIABLES DE ENTRADA Y SALIDA: NO MODIFICAR ORDEN
 ; VARIABLE DE ENTRADA: (SE PODRA MODIFICAR EL VALOR ENTRE 1 Y 100)
-valor_inicial: .word 66
+valor_inicial: .word 97
 ;; VARIABLES DE SALIDA:
 secuencia: .space 120*4
 secuencia_tamanho: .word 0
@@ -21,6 +21,10 @@ lista_valor_medio: .float 0
 .global main
 main:
 	lw  r1, valor_inicial
+	lw  r9, valor_inicial
+	movi2fp f1, r1
+	cvti2f f1, f1
+
 	addi  r8,r0,#0
     addi  r2,r0,#2
     addi  r3,r0,#3
@@ -46,6 +50,8 @@ main:
 		;; Incrementa el contador de la secuencia
 		addi r8, r8, #4
 
+		add  r9, r9, r1
+
 		beqz r29, actualizar_maximo  ;; Si el nuevo número no es el mayor, volver a ejecutar el bucle directamente
 
 		;; Compara el valor de r1 con 1
@@ -59,57 +65,25 @@ main:
 fin:
     
 	;; Obtenemos el tamaño de la secuencia dividiendo entre 4 el índice (luego le añadimos 1)
-	div r7, r8, r4
-
-	;; Carga el primer valor de la secuencia en el acumulador
-	lw r9, valor_inicial
+	srli r7, r8, #1
 	movi2fp f3, r30
-	movi2fp f1, r9
+	srli r7, r7, #1
+
 	sw secuencia_maximo, r30
-	cvti2f f3, f3
-	cvti2f f1, f1
-	addi r8, r0, #1	
-	
-	
+
 	addi r7, r7, #1 ;; Añade 1 al tamaño de la secuencia
 
-	;; Inicializa el índice de la secuencia en 4
-	addi r10, r0, #4
+	cvti2f f3, f3
 
 	movi2fp f2, r7
-
-	;; Calcula la diferencia entre el contador y el tamaño de la secuencia para saber cuándo terminar
-	sub r13, r7, r8
+	
+	movi2fp f5, r9
 	
 	cvti2f f2, f2
 
-	;; Compara el contador con el tamaño de la secuencia
-	beqz r13, continuar  ;; Salta a bucle_secuencia si r13 no es cero
-
-	;; Bucle para recorrer la secuencia
-	bucle_secuencia:
-		;; Carga el valor de la secuencia en r12
-		lw r12, secuencia(r10)
-
-		;; Incrementa el contador
-		addi r8, r8, #1
-
-		;; Suma el valor de la secuencia al acumulador
-		add r9, r9, r12
-
-		;; Calcula la diferencia entre el contador y el tamaño de la secuencia para saber cuándo terminar
-		sub r13, r7, r8
-
-		;; Incrementa el índice
-		addi r10, r10, #4
-
-		;; Compara el contador con el tamaño de la secuencia
-		bnez r13, bucle_secuencia  ;; Salta a bucle_secuencia si r13 no es cero
-
-	continuar:
-	movi2fp f5, r9
-	sw secuencia_tamanho, r7
 	cvti2f f5, f5
+
+	sw secuencia_tamanho, r7
 
 	;; Divide el acumulador por el tamaño de la secuencia
 	divf f4, f5, f2
@@ -140,7 +114,7 @@ fin:
 is_even:
 	;; En este caso es par
 	;; Divide el número r1 por 2
-		div r1, r1, r2
+		srli r1, r1, #1
 	j continue
 
 
@@ -192,11 +166,11 @@ listar:
 	addf f20, f20, f12
 
 	add r8, r0, #32
-	divf f5, f7, f3
+	divf f13, f7, f3
 	sf lista(r8), f13
 	addf f20, f20, f13
 
-	add r8, r0, #9
+	addi r8, r0, #9
 	movi2fp f14, r8
 	cvti2f f14, f14
 
