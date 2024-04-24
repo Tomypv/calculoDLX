@@ -6,7 +6,7 @@
 .data
 ;; VARIABLES DE ENTRADA Y SALIDA: NO MODIFICAR ORDEN
 ; VARIABLE DE ENTRADA: (SE PODRA MODIFICAR EL VALOR ENTRE 1 Y 100)
-valor_inicial: .word 97
+valor_inicial: .word 75
 ;; VARIABLES DE SALIDA:
 secuencia: .space 120*4
 secuencia_tamanho: .word 0
@@ -15,17 +15,17 @@ secuencia_valor_medio: .float 0
 lista: .space 9*4
 lista_valor_medio: .float 0
 ;; FIN VARIABLES DE ENTRADA Y SALIDA
-
+valor_9: .float 0.111111
 .text
 
 .global main
 main:
 	lw  r1, valor_inicial
-	lw  r9, valor_inicial
 	movi2fp f1, r1
 	cvti2f f1, f1
 
 	addi  r8,r0,#0
+	addi  r9,r0,#1
     addi  r2,r0,#2
     addi  r3,r0,#3
 	addi  r4,r0,#4 ;;Añadimos r4 para poder dividir por 4
@@ -64,9 +64,8 @@ main:
 fin:
     
 	;; Obtenemos el tamaño de la secuencia dividiendo entre 4 el índice (luego le añadimos 1)
-	srli r7, r8, #1
+	srli r7, r8, #2
 	movi2fp f3, r30
-	srli r7, r7, #1
 
 	sw secuencia_maximo, r30
 
@@ -93,55 +92,53 @@ fin:
 	add r12, r0, #8
 	add r13, r0, #12
 	multf f6, f3, f2
-	add	r19, r0, #9
+	lf f14, valor_9
 	add r14, r0, #16
 	add r15, r0, #20
 	add r16, r0, #24
 	add r17, r0, #28
 	add r18, r0, #32
 	
-	movi2fp f14, r19
 	sf lista(r10), f5
 	addf f20, f0, f5
 	addf f20, f20, f6
 
-	divf f10, f6, f1
+	divf f21, f2, f1  ;; vT/vIni
 	multf f7, f4, f2
 	sf lista(r11), f6
-	cvti2f f14, f14
 
 
-	divf f8, f5, f3
+	divf f22, f2, f3    ;; vT/vMax
+	multf f10, f3, f21  ;; (vMax/vIni) * vT
 	sf secuencia_valor_medio, f4
 	sf lista(r12), f7
 	addf f20, f20, f7
+	multf f12, f4, f21  ;; (vMed/vIni) * vT
+	addf f20, f20, f10
+	sf lista(r15), f10
 	
 
-	divf f9, f5, f4
-
-
-	divf f11, f6, f4
-	addf f20, f20, f8
-	addf f20, f20, f9
-	addf f20, f20, f10
-	sf lista(r13), f8
-	sf lista(r14), f9
-	sf lista(r15), f10
-
-
-	divf f12, f7, f1
-	addf f20, f20, f11
-	sf lista(r16), f11
-
-
-	divf f13, f7, f3
+	divf f23, f2, f4    ;; vT/vMed
+	multf f8, f1, f22   ;; (vIni/vMax) * vT
 	sf lista(r17), f12
 	addf f20, f20, f12
+	multf f13, f4, f22  ;; (vMed/VMax) * vT
+    addf f20, f20, f8
+	sf lista(r13), f8
+
+
+	;;divf f11, f6, f4
+	multf f9, f1, f23   ;; (vIni/vMed) * vT
 	addf f20, f20, f13
+	sf lista(r18), f13
+	multf f11, f3, f23  ;; (vMax/vMed) * vT
+	sf lista(r14), f9
+	addf f20, f20, f9
+	addf f20, f20, f11
 	
 
-	divf f20, f20, f14
-	sf lista(r18), f13
+	multf f20, f20, f14 ;;dividimos por 9
+	sf lista(r16), f11
 
 	sf lista_valor_medio, f20
 	
@@ -169,4 +166,10 @@ is_even:
 	;;f6 es vMax * vt
 
 	;;f7 es vMed * vt
+
+	;;f21 es vT / vIni
+
+	;;f22 es vT / vMax
+
+	;;f23 es vT / vMed
 	
