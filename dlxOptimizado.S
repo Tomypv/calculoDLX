@@ -155,22 +155,19 @@ main:
 		;; Guarda el número en la secuencia
 		sw secuencia(r8), r1
 
-		;; Incrementa el contador de la secuencia
-		addi r8, r8, #4
-
 		add  r9, r9, r1 ;; Acumulador
 
 		beqz r29, actualizar_maximo  ;; Si el nuevo número es el mayor, se actualiza
 
 		;; A partir de aquí se hace el código de los pares encadenados. Cuando sea impar vuelve a empezar
-		;; Divide el número r1 por 2
+		;; Divide el número r1 por 2 porque esta vez es par
 		srli r1, r1, #1
 
 		;; Guarda el número en la secuencia
-		sw secuencia(r8), r1
+		sw secuencia+4(r8), r1
 		
 		;; Incrementa el contador de la secuencia
-		addi r8, r8, #4
+		addi r8, r8, #8
 
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
 		add  r9, r9, r1 ;; Acumulador
@@ -384,10 +381,10 @@ actualizar_maximo:
 	srli r1, r1, #1
 
 	;; Guarda el número en la secuencia
-	sw secuencia(r8), r1
+	sw secuencia+4(r8), r1
 		
 	;; Incrementa el contador de la secuencia
-	addi r8, r8, #4
+	addi r8, r8, #8
 
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
