@@ -180,14 +180,9 @@ main:
 		;; Guarda el número en la secuencia
 		sw secuencia(r8), r1
 		
-		;; Compara el valor de r1 con 1
-		subi r5, r1, #1
-		
 		;; Incrementa el contador de la secuencia
 		addi r8, r8, #4
 		
-		beqz r5, fin ;; Si es 1 termina el bucle
-
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
 		add  r9, r9, r1 ;; Acumulador
 		bnez r5, bucle
@@ -199,14 +194,9 @@ main:
 		;; Guarda el número en la secuencia
 		sw secuencia(r8), r1
 		
-		;; Compara el valor de r1 con 1
-		subi r5, r1, #1
-		
 		;; Incrementa el contador de la secuencia
 		addi r8, r8, #4
 		
-		beqz r5, fin ;; Si es 1 termina el bucle
-
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
 		add  r9, r9, r1 ;; Acumulador
 		bnez r5, bucle
@@ -397,14 +387,9 @@ actualizar_maximo:
 	;; Guarda el número en la secuencia
 	sw secuencia(r8), r1
 		
-	;; Compara el valor de r1 con 1
-	subi r5, r1, #1
-		
 	;; Incrementa el contador de la secuencia
 	addi r8, r8, #4
 		
-	beqz r5, fin ;; Si es 1 termina el bucle
-
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
 	bnez r5, bucle
@@ -416,14 +401,9 @@ actualizar_maximo:
 	;; Guarda el número en la secuencia
 	sw secuencia(r8), r1
 		
-	;; Compara el valor de r1 con 1
-	subi r5, r1, #1
-		
 	;; Incrementa el contador de la secuencia
 	addi r8, r8, #4
 		
-	beqz r5, fin ;; Si es 1 termina el bucle
-
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
 	bnez r5, bucle
