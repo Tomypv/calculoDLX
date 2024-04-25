@@ -6,7 +6,7 @@
 .data
 ;; VARIABLES DE ENTRADA Y SALIDA: NO MODIFICAR ORDEN
 ; VARIABLE DE ENTRADA: (SE PODRA MODIFICAR EL VALOR ENTRE 1 Y 100)
-valor_inicial: .word 97
+valor_inicial: .word 10
 ;; VARIABLES DE SALIDA:
 secuencia: .space 120*4
 secuencia_tamanho: .word 0
@@ -50,7 +50,116 @@ main:
 		;; Incrementa el contador de la secuencia
 		addi r8, r8, #4
 		
-		bnez r5, bucle ;; Repite el bucle si no es 1
+		beqz r5, fin ;; Si es 1 termina el bucle
+
+		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		add  r9, r9, r1 ;; Acumulador
+		bnez r5, is_odd
+
+		;; En este caso es par
+		;; Divide el número r1 por 2
+		srli r1, r1, #1
+
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
+		
+		;; Compara el valor de r1 con 1
+		subi r5, r1, #1
+		
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
+		
+		beqz r5, fin ;; Si es 1 termina el bucle
+
+		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		add  r9, r9, r1 ;; Acumulador
+		bnez r5, is_odd
+
+		;; En este caso es par
+		;; Divide el número r1 por 2
+		srli r1, r1, #1
+
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
+		
+		;; Compara el valor de r1 con 1
+		subi r5, r1, #1
+		
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
+		
+		beqz r5, fin ;; Si es 1 termina el bucle
+
+		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		add  r9, r9, r1 ;; Acumulador
+		bnez r5, is_odd
+
+		;; En este caso es par
+		;; Divide el número r1 por 2
+		srli r1, r1, #1
+
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
+		
+		;; Compara el valor de r1 con 1
+		subi r5, r1, #1
+		
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
+		
+		beqz r5, fin ;; Si es 1 termina el bucle
+
+		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		add  r9, r9, r1 ;; Acumulador
+		bnez r5, is_odd
+
+		;; En este caso es par
+		;; Divide el número r1 por 2
+		srli r1, r1, #1
+
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
+		
+		;; Compara el valor de r1 con 1
+		subi r5, r1, #1
+		
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
+		
+		beqz r5, fin ;; Si es 1 termina el bucle
+
+		andi r5, r1, #1 ;; Comprueba si el número es par o impar
+		add  r9, r9, r1 ;; Acumulador
+		bnez r5, is_odd
+
+		;; En este caso es par
+		;; Divide el número r1 por 2
+		srli r1, r1, #1
+
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
+		
+		;; Compara el valor de r1 con 1
+		subi r5, r1, #1
+		
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
+		
+		beqz r5, fin ;; Si es 1 termina el bucle
+
+
+		add  r9, r9, r1 ;; Acumulador
+
+		;; En este caso r1 es 2
+		;; Divide el número r1 por 2
+		srli r1, r1, #1
+
+		;; Guarda el número en la secuencia
+		sw secuencia(r8), r1
+		
+		;; Incrementa el contador de la secuencia
+		addi r8, r8, #4
+
 
 fin:
     
@@ -90,10 +199,9 @@ fin:
 	add r17, r0, #28
 	add r18, r0, #32
 	multf f10, f3, f21  ;; (vMax/vIni) * vT
-	sf lista(r10), f5
 	sf lista(r11), f6
-	addf f20, f20, f6
-	addf f20, f0, f5
+	addf f20, f5, f6
+	sf lista(r10), f5
 	
 
 	divf f22, f2, f3    ;; vT/vMax
