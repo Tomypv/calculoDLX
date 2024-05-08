@@ -27,11 +27,14 @@ main:
 	cvti2f f1, f1
 	divf f25, f24, f1  ;; 1/vIni
 	addi  r8,r0,#4
-	addi  r9,r0,#1
 
+	subi r5, r1, #1 ;;Comprobamos si el primer número es 1
+	addi  r9,r0,#1
 	add  r30,r0,r1
 	sw secuencia, r1
+	beqz r5, fin ;; Si es 1 termina el bucle
 
+	
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
 	bnez r5, bucle
@@ -165,54 +168,45 @@ main:
 
 		;; Guarda el número en la secuencia
 		sw secuencia+4(r8), r1
-		
-		;; Incrementa el contador de la secuencia
-		addi r8, r8, #8
 
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
 		add  r9, r9, r1 ;; Acumulador
-		bnez r5, bucle
+		bnez r5, bucle1
 
 		;; En este caso es par
 		;; Divide el número r1 por 2
 		srli r1, r1, #1
 
 		;; Guarda el número en la secuencia
-		sw secuencia(r8), r1
-		
-		;; Incrementa el contador de la secuencia
-		addi r8, r8, #4
+		sw secuencia+8(r8), r1
 		
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
 		add  r9, r9, r1 ;; Acumulador
-		bnez r5, bucle
+		bnez r5, bucle2
 
 		;; En este caso es par
 		;; Divide el número r1 por 2
 		srli r1, r1, #1
 
 		;; Guarda el número en la secuencia
-		sw secuencia(r8), r1
-		
-		;; Incrementa el contador de la secuencia
-		addi r8, r8, #4
+		sw secuencia+12(r8), r1
 		
 		andi r5, r1, #1 ;; Comprueba si el número es par o impar
 		add  r9, r9, r1 ;; Acumulador
-		bnez r5, bucle
+		bnez r5, bucle3
 
 		;; En este caso es par
 		;; Divide el número r1 por 2
 		srli r1, r1, #1
 
 		;; Guarda el número en la secuencia
-		sw secuencia(r8), r1
+		sw secuencia+16(r8), r1
 		
 		;; Compara el valor de r1 con 1
 		subi r5, r1, #1
 		
 		;; Incrementa el contador de la secuencia
-		addi r8, r8, #4
+		addi r8, r8, #20
 		
 		beqz r5, fin ;; Si es 1 termina el bucle
 
@@ -281,7 +275,7 @@ main:
 
 		;; Guarda el número en la secuencia
 		sw secuencia(r8), r1
-		
+
 		;; Incrementa el contador de la secuencia
 		addi r8, r8, #4
 
@@ -367,59 +361,50 @@ actualizar_maximo:
 	add  r30,r0,r1
 
 	;; A partir de aquí se hace el código de los pares encadenados. Cuando sea impar vuelve a empezar
-	;; Divide el número r1 por 2
+	;; Divide el número r1 por 2 porque esta vez es par
 	srli r1, r1, #1
 
 	;; Guarda el número en la secuencia
 	sw secuencia+4(r8), r1
-		
-	;; Incrementa el contador de la secuencia
-	addi r8, r8, #8
 
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
-	bnez r5, bucle
+	bnez r5, bucle1
 
 	;; En este caso es par
 	;; Divide el número r1 por 2
 	srli r1, r1, #1
 
 	;; Guarda el número en la secuencia
-	sw secuencia(r8), r1
-		
-	;; Incrementa el contador de la secuencia
-	addi r8, r8, #4
+	sw secuencia+8(r8), r1
 		
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
-	bnez r5, bucle
+	bnez r5, bucle2
 
 	;; En este caso es par
 	;; Divide el número r1 por 2
 	srli r1, r1, #1
 
 	;; Guarda el número en la secuencia
-	sw secuencia(r8), r1
-		
-	;; Incrementa el contador de la secuencia
-	addi r8, r8, #4
+	sw secuencia+12(r8), r1
 		
 	andi r5, r1, #1 ;; Comprueba si el número es par o impar
 	add  r9, r9, r1 ;; Acumulador
-	bnez r5, bucle
+	bnez r5, bucle3
 
 	;; En este caso es par
 	;; Divide el número r1 por 2
 	srli r1, r1, #1
 
 	;; Guarda el número en la secuencia
-	sw secuencia(r8), r1
+	sw secuencia+16(r8), r1
 		
 	;; Compara el valor de r1 con 1
 	subi r5, r1, #1
 		
 	;; Incrementa el contador de la secuencia
-	addi r8, r8, #4
+	addi r8, r8, #20
 		
 	beqz r5, fin ;; Si es 1 termina el bucle
 
@@ -492,7 +477,428 @@ actualizar_maximo:
 	;; Incrementa el contador de la secuencia
 	addi r8, r8, #4
 
-j fin
+	j fin
+
+bucle1:
+
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #8
+
+	;; En este caso es impar
+	slli r2, r1, #1  ;; Multiplica el número por 2
+		
+	add r1, r2, r1	 ;; Suma otra vez el número (x3)
+
+	addi r1, r1, #1  ;; Suma 1 al número
+		
+	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+
+	add  r9, r9, r1 ;; Acumulador
+
+	beqz r29, actualizar_maximo  ;; Si el nuevo número es el mayor, se actualiza
+
+	;; A partir de aquí se hace el código de los pares encadenados. Cuando sea impar vuelve a empezar
+	;; Divide el número r1 por 2 porque esta vez es par
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+4(r8), r1
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle1
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+8(r8), r1
+		
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle2
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+12(r8), r1
+		
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle3
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+16(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #20
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	add  r9, r9, r1 ;; Acumulador
+
+	;; En este caso r1 es 2
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+
+	j fin
+
+bucle2:
+
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #12
+
+	;; En este caso es impar
+	slli r2, r1, #1  ;; Multiplica el número por 2
+		
+	add r1, r2, r1	 ;; Suma otra vez el número (x3)
+
+	addi r1, r1, #1  ;; Suma 1 al número
+		
+	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+
+	add  r9, r9, r1 ;; Acumulador
+
+	beqz r29, actualizar_maximo  ;; Si el nuevo número es el mayor, se actualiza
+
+	;; A partir de aquí se hace el código de los pares encadenados. Cuando sea impar vuelve a empezar
+	;; Divide el número r1 por 2 porque esta vez es par
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+4(r8), r1
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle1
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+8(r8), r1
+	
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle2
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+12(r8), r1
+	
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle3
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+16(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #20
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	add  r9, r9, r1 ;; Acumulador
+
+	;; En este caso r1 es 2
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+
+	j fin
+
+bucle3:
+
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #16
+
+	;; En este caso es impar
+	slli r2, r1, #1  ;; Multiplica el número por 2
+		
+	add r1, r2, r1	 ;; Suma otra vez el número (x3)
+
+	addi r1, r1, #1  ;; Suma 1 al número
+		
+	slt r29, r1, r30 ;;Cambiamos la división por una comparación para ahorrar ciclos
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+
+	add  r9, r9, r1 ;; Acumulador
+
+	beqz r29, actualizar_maximo  ;; Si el nuevo número es el mayor, se actualiza
+
+	;; A partir de aquí se hace el código de los pares encadenados. Cuando sea impar vuelve a empezar
+	;; Divide el número r1 por 2 porque esta vez es par
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+4(r8), r1
+	
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle1
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+8(r8), r1
+		
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle2
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+12(r8), r1
+	
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle3
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia+16(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #20
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	andi r5, r1, #1 ;; Comprueba si el número es par o impar
+	add  r9, r9, r1 ;; Acumulador
+	bnez r5, bucle
+
+	;; En este caso es par
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Compara el valor de r1 con 1
+	subi r5, r1, #1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+		
+	beqz r5, fin ;; Si es 1 termina el bucle
+
+	add  r9, r9, r1 ;; Acumulador
+
+	;; En este caso r1 es 2
+	;; Divide el número r1 por 2
+	srli r1, r1, #1
+
+	;; Guarda el número en la secuencia
+	sw secuencia(r8), r1
+		
+	;; Incrementa el contador de la secuencia
+	addi r8, r8, #4
+
+	j fin
+
 
 
 	;;f1 es valor_inicial
